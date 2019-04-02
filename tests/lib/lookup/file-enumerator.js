@@ -1631,54 +1631,6 @@ describe("FileEnumerator", () => {
                             `The 'ecmaFeatures' config file property is deprecated, and has no effect. (found in "ecma-features${path.sep}.eslintrc.yml")`
                         );
                     });
-
-                    it("should emit a deprecation warning if 'parserOptions.ecmaFeatures.experimentalObjectRestSpread' is given.", async() => {
-                        getConfig(enumerator, "experimental-object-rest-spread/basic/test.js");
-
-                        // Wait for "warning" event.
-                        await nextTick();
-
-                        assert.notStrictEqual(warning, null);
-                        assert.strictEqual(
-                            warning.message,
-                            `The 'parserOptions.ecmaFeatures.experimentalObjectRestSpread' option is deprecated. Use 'parserOptions.ecmaVersion' instead. (found in "experimental-object-rest-spread${path.sep}basic${path.sep}.eslintrc.yml")`
-                        );
-                    });
-
-                    it("should emit a deprecation warning if 'parserOptions.ecmaFeatures.experimentalObjectRestSpread' is given in a parent config.", async() => {
-                        getConfig(enumerator, "experimental-object-rest-spread/subdir/lib/test.js");
-
-                        // Wait for "warning" event.
-                        await nextTick();
-
-                        assert.notStrictEqual(warning, null);
-                        assert.strictEqual(
-                            warning.message,
-                            `The 'parserOptions.ecmaFeatures.experimentalObjectRestSpread' option is deprecated. Use 'parserOptions.ecmaVersion' instead. (found in "experimental-object-rest-spread${path.sep}subdir${path.sep}.eslintrc.yml")`
-                        );
-                    });
-
-                    it("should emit a deprecation warning if 'parserOptions.ecmaFeatures.experimentalObjectRestSpread' is given in a shareable config.", async() => {
-                        getConfig(enumerator, "experimental-object-rest-spread/extends/test.js");
-
-                        // Wait for "warning" event.
-                        await nextTick();
-
-                        assert.notStrictEqual(warning, null);
-                        assert.strictEqual(
-                            warning.message,
-                            `The 'parserOptions.ecmaFeatures.experimentalObjectRestSpread' option is deprecated. Use 'parserOptions.ecmaVersion' instead. (found in "experimental-object-rest-spread${path.sep}extends${path.sep}.eslintrc.yml » .${path.sep}common.yml")`
-                        );
-                    });
-
-                    it("should NOT emit a deprecation warning even if 'parserOptions.ecmaFeatures.experimentalObjectRestSpread' is given, if parser is not espree.", async() => {
-                        getConfig(enumerator, "experimental-object-rest-spread/another-parser/test.js");
-
-                        // Wait for "warning" event.
-                        await nextTick();
-
-                        assert.strictEqual(warning, null);
-                    });
                 });
             });
         });

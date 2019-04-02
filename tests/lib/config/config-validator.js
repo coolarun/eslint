@@ -115,7 +115,7 @@ describe("Validator", () => {
             validator.validate(
                 {
                     root: true,
-                    globals: { globalFoo: "bar" },
+                    globals: { globalFoo: "readonly" },
                     parser: "parserFoo",
                     env: { browser: true },
                     plugins: ["pluginFoo", "pluginBar"],
@@ -320,6 +320,15 @@ describe("Validator", () => {
                 const fn = validator.validate.bind(null, { rules: { "mock-no-options-rule": [2, "extra"] } }, "tests", ruleMapper);
 
                 assert.throws(fn, "tests:\n\tConfiguration for rule \"mock-no-options-rule\" is invalid:\n\tValue [\"extra\"] should NOT have more than 0 items.\n");
+            });
+        });
+
+        describe("globals", () => {
+            it("should disallow globals set to invalid values", () => {
+                assert.throws(
+                    () => validator.validate({ globals: { foo: "AAAAA" } }, "tests", ruleMapper),
+                    "ESLint configuration of global 'foo' in tests is invalid:\n'AAAAA' is not a valid configuration for a global (use 'readonly', 'writable', or 'off')"
+                );
             });
         });
 

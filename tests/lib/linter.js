@@ -3490,6 +3490,34 @@ describe("Linter", () => {
             assert(ok);
         });
 
+        it("should report a linting error when a global is set to an invalid value", () => {
+            const results = linter.verify("/* global foo: AAAAA, bar: readonly */\nfoo;\nbar;", { rules: { "no-undef": "error" } });
+
+            assert.deepStrictEqual(results, [
+                {
+                    ruleId: null,
+                    severity: 2,
+                    message: "'AAAAA' is not a valid configuration for a global (use 'readonly', 'writable', or 'off')",
+                    line: 1,
+                    column: 1,
+                    endLine: 1,
+                    endColumn: 39,
+                    nodeType: null
+                },
+                {
+                    ruleId: "no-undef",
+                    messageId: "undef",
+                    severity: 2,
+                    message: "'foo' is not defined.",
+                    line: 2,
+                    column: 1,
+                    endLine: 2,
+                    endColumn: 4,
+                    nodeType: "Identifier"
+                }
+            ]);
+        });
+
         it("should not crash when we reuse the SourceCode object", () => {
             linter.verify("function render() { return <div className='test'>{hello}</div> }", { parserOptions: { ecmaVersion: 6, ecmaFeatures: { jsx: true } } });
             linter.verify(linter.getSourceCode(), { parserOptions: { ecmaVersion: 6, ecmaFeatures: { jsx: true } } });
@@ -3544,15 +3572,6 @@ describe("Linter", () => {
             linter.defineRule("foo-bar-baz", spy);
             linter.verify("x", { rules: { "foo-bar-baz": "error" } });
             assert(spy.calledOnce);
-        });
-
-        it("should parse ES2018 code for backward compatibility if 'parserOptions.ecmaFeatures.experimentalObjectRestSpread' is given.", () => {
-            const messages = linter.verify(
-                "async function* f() { let {a, ...rest} = { a, ...obj }; }",
-                { parserOptions: { ecmaFeatures: { experimentalObjectRestSpread: true } } }
-            );
-
-            assert(messages.length === 0);
         });
     });
 
